@@ -3,7 +3,7 @@
 import { resolve } from 'path';
 
 import { readJsonFileAsync, fileExistsAsync, readDirAsync } from './async-fs';
-import { getAllDependenciesForProject, getPackageJsonForDirectory } from './io'
+import { getAllDependenciesForProject, getPackageJsonForDirectory } from './io';
 
 export const run = async () => {
 	try {
