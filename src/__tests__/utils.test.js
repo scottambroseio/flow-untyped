@@ -22,5 +22,16 @@ describe('readJsonFileAsync', () => {
 
         expect(readFile).toHaveBeenCalledWith(expect.any(String), 'utf8', expect.any(Function));
         expect(result).toEqual(expected);
-    })
-})
+    });
+
+    it('should throw if it encounters an error when reading from the fs', async () => {
+        const err = new Error('generic error');
+
+        readFile.mockImplementation((path: string, encoding: string, callback: (err: any, data: any) => void) => {
+            callback(err, undefined);
+        });
+
+        // $FlowFixMe
+        await expect(readJsonFileAsync('test')).rejects.toBe(err);
+    });
+});
