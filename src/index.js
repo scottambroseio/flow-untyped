@@ -5,34 +5,37 @@ import { resolve } from 'path';
 import { readJsonFileAsync, fileExistsAsync, readDirAsync } from './async-fs';
 import { getAllDependenciesForProject, getPackageJsonForDirectory } from './io';
 
+const TYPED = 'typed';
+const UNTYPED = 'untyped';
+
 export const run = async () => {
 	const cwd = process.cwd();
-	const deps = await getAllDependenciesForProject(cwd);
+	const projectDeps = await getAllDependenciesForProject(cwd);
 
-	const dirToCheck = resolve(cwd, 'flow-typed/npm');
-	const typedFiles = await readDirAsync(dirToCheck);
+	const flowTypedDir = resolve(cwd, 'flow-typed/npm');
+	const flowTypeDefs = await readDirAsync(flowTypedDir);
 
-	const promises = Object.keys(deps).map(async (dep, index) => {
+	const promises = Object.keys(projectDeps).map(async (dep, index) => {
 		const path = resolve(cwd, `node_modules/${dep}`);
 		const packageJson = await getPackageJsonForDirectory(path);
 		const mainFile = resolve(path, packageJson.main || 'index.js');
 
-		//search for .js.flow
+		// if main file is index.js, look for index.js.flow
 		const defFile = mainFile + '.flow';
 		const defFileExists = await fileExistsAsync(defFile);
 
 		if (defFileExists) {
-			return { [dep]: 'typed' };
+			return { [dep]: TYPED };
 		} else {
-			// check for flow typed defFile
-			const typedFileExists = typedFiles.some(filename => {
+			// check for flow-typed defFile in flow-typed directory
+			const flowTypeDefExists = flowTypeDefs.some(filename => {
 				return filename.match(`^${dep}_v`);
 			});
 
-			if (typedFileExists) {
-				return { [dep]: 'typed' };
+			if (flowTypeDefExists) {
+				return { [dep]: TYPED };
 			} else {
-				return { [dep]: 'untyped' };
+				return { [dep]: UNTYPED };
 			}
 		}
 	});
@@ -42,6 +45,4 @@ export const run = async () => {
 	const summary = Object.assign({}, ...results);
 
 	return summary;
-
-	return {};
 };
