@@ -3,10 +3,10 @@
 import { resolve } from 'path';
 import slash from 'slash';
 
-import { getPackageJsonForDirectory } from '../index';
-import { readJsonFileAsync } from '../utils';
+import { getPackageJsonForDirectory } from '../io';
+import { readJsonFileAsync } from '../async-fs';
 
-jest.mock('../utils');
+jest.mock('../async-fs');
 
 describe('getPackageJsonForDirectory', () => {
 	it('should return the package.json contents as a JS object', async () => {
