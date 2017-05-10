@@ -2,7 +2,6 @@
     "name": "flow-untyped",
     "version": "0.0.0",
     "description": "Tool for finding untyped js modules",
-    "main": "dist/index.js",
     "license": "MIT",
     "devDependencies": {
         "babel-cli": "^6.24.1",
