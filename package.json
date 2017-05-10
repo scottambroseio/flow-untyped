@@ -1,0 +1,20 @@
+{
+    "name": "flow-untyped",
+    "version": "1.0.0",
+    "description": "Tool for finding untyped js modules",
+    "main": "src/index.js",
+    "license": "MIT",
+    "devDependencies": {
+        "babel-cli": "^6.24.1",
+        "babel-plugin-transform-flow-strip-types": "^6.22.0",
+        "babel-preset-es2015": "^6.24.1",
+        "eslint": "^3.19.0",
+        "flow-bin": "^0.45.0",
+        "jest": "^20.0.0",
+        "slash": "^1.0.0"
+    },
+    "scripts": {
+        "start": "babel-node src/index.js",
+        "test": "jest"
+    }
+}
