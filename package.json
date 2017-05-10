@@ -1,6 +1,6 @@
 {
     "name": "flow-untyped",
-    "version": "1.0.0",
+    "version": "0.0.0",
     "description": "Tool for finding untyped js modules",
     "main": "src/index.js",
     "license": "MIT",
@@ -14,7 +14,11 @@
         "slash": "^1.0.0"
     },
     "scripts": {
-        "start": "babel-node src/index.js",
-        "test": "jest"
+        "start": "babel-node src/cli.js",
+        "test": "jest",
+        "build": "babel src/ -d dist/"
+    },
+    "bin": {
+        "flow-untyped": "dist/cli.js"
     }
 }
