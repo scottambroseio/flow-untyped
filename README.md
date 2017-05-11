@@ -19,7 +19,7 @@ The current naive implementation works as follows:
 This tool will never be perfect with the way it works, it's just an excuse for me to build a NodeJs cli tool while having some actual use for me ^.^
         
 TODO:
-Make it smarter (e.g read the [libs] section of the .flowconfig file and look in them for definitions also)!
-Make it print the results in a nicer format
-Make this installable as a node cli module
-Make it work with monorepo style repositorys rather than single repositorys
+- Make it smarter (e.g read the [libs] section of the .flowconfig file and look in them for definitions also)!
+- Make it print the results in a nicer format
+- Make this installable as a node cli module
+- Make it work with monorepo style projects rather than single projects

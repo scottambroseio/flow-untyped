@@ -1,11 +1,10 @@
 #!/usr/bin/env node
-// @flow
 
 'use strict';
 
-import { run } from './index';
+var _index = require('./index');
 
-run().then(summary => {
+(0, _index.run)().then(function (summary) {
 	console.log('\n');
 	console.log(summary);
 	console.log('\n');

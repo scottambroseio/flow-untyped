@@ -1,4 +1,7 @@
 // @flow
+
+'use strict';
+
 import { readFile, access, readdir } from 'fs';
 
 import { readJsonFileAsync, fileExistsAsync, readDirAsync } from '../async-fs';

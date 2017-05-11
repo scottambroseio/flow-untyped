@@ -1,5 +1,7 @@
 // @flow
 
+'use strict';
+
 import { readFile, access, readdir } from 'fs';
 
 export const readJsonFileAsync = (path: string): Promise<Object> => {

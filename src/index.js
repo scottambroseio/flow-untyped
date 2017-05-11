@@ -1,5 +1,7 @@
 // @flow
 
+'use strict';
+
 import { resolve } from 'path';
 
 import { readJsonFileAsync, fileExistsAsync, readDirAsync } from './async-fs';

@@ -1,5 +1,7 @@
 // @flow
 
+'use strict';
+
 import slash from 'slash';
 import {
 	getPackageJsonForDirectory,
