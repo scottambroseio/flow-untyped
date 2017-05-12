@@ -4,11 +4,8 @@
 
 import { resolve } from 'path';
 
-import { fileExistsAsync, readDirAsync } from './async-fs';
-import { getAllDependenciesForProject, getPackageJsonForDirectory } from './io';
-
-const TYPED = 'typed';
-const UNTYPED = 'untyped';
+import { fileExistsAsync, readDirAsync, readJsonFileAsync } from './async-fs';
+import { getAllDependenciesForProject } from './io';
 
 export const getInfo = async (cwd: string, projectDeps: Object) => {
 	const flowTypedDir = resolve(cwd, 'flow-typed/npm');
@@ -16,7 +13,8 @@ export const getInfo = async (cwd: string, projectDeps: Object) => {
 
 	return Promise.all(Object.keys(projectDeps).map(async (dep, index) => {
 		const path = resolve(cwd, `node_modules/${dep}`);
-		const { main } = await getPackageJsonForDirectory(path);
+		const packageJsonPath = resolve(path, 'package.json');
+		const { main } = await readJsonFileAsync(packageJsonPath);
 		const mainFile = resolve(path, main || 'index.js');
 
 		// if main file is index.js, look for index.js.flow

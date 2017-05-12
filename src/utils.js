@@ -1,16 +1,11 @@
 // @flow
 
-'use strict';
-
-import { resolve } from 'path';
-
-import { readJsonFileAsync } from './async-fs';
+import { getPackageJsonForDirectory } from './io';
 
 export const getAllDependenciesForProject = async (
-	directory: string,
+	cwd: string,
 ): Promise<Object> => {
-	const path = resolve(directory, 'package.json');
-	const packageJson = await readJsonFileAsync(path);
+	const packageJson = await getPackageJsonForDirectory(cwd);
 
 	const runDeps = packageJson.dependencies || {};
 	const devDeps = packageJson.devDependencies || {};

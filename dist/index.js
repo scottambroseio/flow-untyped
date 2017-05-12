@@ -11,17 +11,15 @@ var _asyncFs = require('./async-fs');
 
 var _io = require('./io');
 
-var TYPED = 'typed';
-var UNTYPED = 'untyped';
-
 var getInfo = exports.getInfo = async function getInfo(cwd, projectDeps) {
 	var flowTypedDir = (0, _path.resolve)(cwd, 'flow-typed/npm');
 	var flowTypeDefs = await (0, _asyncFs.readDirAsync)(flowTypedDir);
 
 	return Promise.all(Object.keys(projectDeps).map(async function (dep, index) {
 		var path = (0, _path.resolve)(cwd, 'node_modules/' + dep);
+		var packageJsonPath = (0, _path.resolve)(path, 'package.json');
 
-		var _ref = await (0, _io.getPackageJsonForDirectory)(path),
+		var _ref = await (0, _asyncFs.readJsonFileAsync)(packageJsonPath),
 		    main = _ref.main;
 
 		var mainFile = (0, _path.resolve)(path, main || 'index.js');

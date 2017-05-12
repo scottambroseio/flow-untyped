@@ -3,31 +3,15 @@
 'use strict';
 
 import slash from 'slash';
+import { resolve } from 'path';
 import {
-	getPackageJsonForDirectory,
-	getAllDependenciesForProject,
+	getAllDependenciesForProject
 } from '../io';
 
 import { readJsonFileAsync } from '../async-fs';
 
 jest.mock('../async-fs');
-
-describe('getPackageJsonForDirectory', () => {
-	it('should invoke readJsonFileAsync with the correct arguments and return the result', async () => {
-		const expectedReturn = { test: true };
-		// $FlowFixMe
-		readJsonFileAsync.mockImplementation(() => expectedReturn);
-
-		const dir = 'test';
-
-		const result = await getPackageJsonForDirectory(dir);
-		// $FlowFixMe
-		const calledWith = slash(readJsonFileAsync.mock.calls[0][0]);
-
-		expect(result).toBe(expectedReturn);
-		expect(calledWith).toMatch(/test\/package.json$/);
-	});
-});
+jest.mock('path');
 
 describe('getAllDependenciesForProject', () => {
 	it('should return the correct dependencies', async () => {
@@ -44,6 +28,16 @@ describe('getAllDependenciesForProject', () => {
 		const result = await getAllDependenciesForProject('');
 
 		expect(result).toEqual(expected);
+	});
+
+	it('should invoke readJsonFileAsync with the correct arguments', async () => {
+		const expected = 'foo/bar';
+
+		resolve.mockImplementation(() => expected);
+
+		const result = await getAllDependenciesForProject('');
+		
+		expect(readJsonFileAsync).toBeCalledWith(expected)
 	});
 
 	it("should return empty objects if the fields don't exist", async () => {
