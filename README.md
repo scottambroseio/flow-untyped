@@ -20,5 +20,4 @@ This tool will never be perfect with the way it works, it's just an excuse for m
         
 TODO:
 - Make it smarter (e.g read the [libs] section of the .flowconfig file and look in them for definitions also)!
-- Make it print the version of the module rather than just the name
 - Make it work with monorepo style projects rather than single projects
