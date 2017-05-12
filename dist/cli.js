@@ -10,3 +10,4 @@ var _index = require('./index');
 }, function () {
   console.error('Sorry, something went wrong :(');
 });
+//# sourceMappingURL=cli.js.map

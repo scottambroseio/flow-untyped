@@ -49,3 +49,4 @@ var run = exports.run = async function run() {
 
   return getInfo(cwd, projectDeps);
 };
+//# sourceMappingURL=index.js.map
