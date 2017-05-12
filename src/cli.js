@@ -5,8 +5,10 @@
 
 import { run } from './index';
 
-run().then(summary => {
-	console.log('\n');
-	console.log(summary);
-	console.log('\n');
+run().then(results => {
+	results.sort().forEach((result) => {
+		console.log(result);
+	});
+}, () => {
+	console.error('Sorry, something went wrong :(');
 });

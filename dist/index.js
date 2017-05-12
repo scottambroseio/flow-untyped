@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.run = undefined;
+exports.run = exports.getInfo = undefined;
 
 var _path = require('path');
 
@@ -11,48 +11,42 @@ var _asyncFs = require('./async-fs');
 
 var _io = require('./io');
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 var TYPED = 'typed';
 var UNTYPED = 'untyped';
 
-var run = exports.run = async function run() {
-	var cwd = process.cwd();
-	var projectDeps = await (0, _io.getAllDependenciesForProject)(cwd);
-
+var getInfo = exports.getInfo = async function getInfo(cwd, projectDeps) {
 	var flowTypedDir = (0, _path.resolve)(cwd, 'flow-typed/npm');
 	var flowTypeDefs = await (0, _asyncFs.readDirAsync)(flowTypedDir);
 
-	var promises = Object.keys(projectDeps).map(async function (dep, index) {
+	return Promise.all(Object.keys(projectDeps).map(async function (dep, index) {
 		var path = (0, _path.resolve)(cwd, 'node_modules/' + dep);
-		var packageJson = await (0, _io.getPackageJsonForDirectory)(path);
-		var mainFile = (0, _path.resolve)(path, packageJson.main || 'index.js');
+
+		var _ref = await (0, _io.getPackageJsonForDirectory)(path),
+		    main = _ref.main;
+
+		var mainFile = (0, _path.resolve)(path, main || 'index.js');
 
 		// if main file is index.js, look for index.js.flow
 		var defFile = mainFile + '.flow';
 		var defFileExists = await (0, _asyncFs.fileExistsAsync)(defFile);
 
 		if (defFileExists) {
-			return _defineProperty({}, dep, TYPED);
+			return dep + ' is typed';
 		} else {
 			// check for flow-typed defFile in flow-typed directory
 			var flowTypeDefExists = flowTypeDefs.some(function (filename) {
 				return filename.match('^' + dep + '_v');
 			});
 
-			if (flowTypeDefExists) {
-				return _defineProperty({}, dep, TYPED);
-			} else {
-				return _defineProperty({}, dep, UNTYPED);
-			}
+			return flowTypeDefExists ? dep + ' is typed' : dep + ' is untyped';
 		}
-	});
+	}));
+};
 
-	var results = await Promise.all(promises);
+var run = exports.run = async function run() {
+	var cwd = process.cwd();
 
-	var summary = Object.assign.apply(Object, [{}].concat(_toConsumableArray(results)));
+	var projectDeps = await (0, _io.getAllDependenciesForProject)(cwd);
 
-	return summary;
+	return await getInfo(cwd, projectDeps);
 };
