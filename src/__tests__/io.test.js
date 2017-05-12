@@ -1,12 +1,7 @@
 // @flow
 
-'use strict';
-
-import slash from 'slash';
 import { resolve } from 'path';
-import {
-	getAllDependenciesForProject
-} from '../io';
+import { getAllDependenciesForProject } from '../io';
 
 import { readJsonFileAsync } from '../async-fs';
 
@@ -14,39 +9,39 @@ jest.mock('../async-fs');
 jest.mock('path');
 
 describe('getAllDependenciesForProject', () => {
-	it('should return the correct dependencies', async () => {
-		const expected = {
-			foo: '1.0.0',
-			bar: '1.0.0',
-		};
-		// $FlowFixMe
-		readJsonFileAsync.mockImplementation(() => ({
-			dependencies: { foo: '1.0.0' },
-			devDependencies: { bar: '1.0.0' },
-		}));
+  it('should return the correct dependencies', async () => {
+    const expected = {
+      foo: '1.0.0',
+      bar: '1.0.0',
+    };
+    // $FlowFixMe
+    readJsonFileAsync.mockImplementation(() => ({
+      dependencies: { foo: '1.0.0' },
+      devDependencies: { bar: '1.0.0' },
+    }));
 
-		const result = await getAllDependenciesForProject('');
+    const result = await getAllDependenciesForProject('');
 
-		expect(result).toEqual(expected);
-	});
+    expect(result).toEqual(expected);
+  });
 
-	it('should invoke readJsonFileAsync with the correct arguments', async () => {
-		const expected = 'foo/bar';
+  it('should invoke readJsonFileAsync with the correct arguments', async () => {
+    const expected = 'foo/bar';
 
-		resolve.mockImplementation(() => expected);
+    resolve.mockImplementation(() => expected);
 
-		const result = await getAllDependenciesForProject('');
-		
-		expect(readJsonFileAsync).toBeCalledWith(expected)
-	});
+    await getAllDependenciesForProject('');
 
-	it("should return empty objects if the fields don't exist", async () => {
-		const expected = {};
-		// $FlowFixMe
-		readJsonFileAsync.mockImplementation(() => ({}));
+    expect(readJsonFileAsync).toBeCalledWith(expected);
+  });
 
-		const result = await getAllDependenciesForProject('');
+  it("should return empty objects if the fields don't exist", async () => {
+    const expected = {};
+    // $FlowFixMe
+    readJsonFileAsync.mockImplementation(() => ({}));
 
-		expect(result).toEqual(expected);
-	});
+    const result = await getAllDependenciesForProject('');
+
+    expect(result).toEqual(expected);
+  });
 });

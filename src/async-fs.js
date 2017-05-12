@@ -1,36 +1,31 @@
 // @flow
 
-'use strict';
-
 import { readFile, access, readdir } from 'fs';
 
-export const readJsonFileAsync = (path: string): Promise<Object> => {
-	return new Promise((res, rej) => {
-		readFile(path, 'utf8', function(err, data) {
-			if (err) return rej(err);
+export const readJsonFileAsync = (path: string): Promise<Object> =>
+  new Promise((res, rej) => {
+    readFile(path, 'utf8', (err, data) => {
+      if (err) return rej(err);
 
-			return res(JSON.parse(data));
-		});
-	});
-};
+      return res(JSON.parse(data));
+    });
+  });
 
-export const fileExistsAsync = (path: string): Promise<boolean> => {
-	return new Promise((res, rej) => {
-		// $FlowFixMe
-		access(path, (err: ?ErrnoError) => {
-			if (err) return res(false);
+export const fileExistsAsync = (path: string): Promise<boolean> =>
+  new Promise((res) => {
+    // $FlowFixMe
+    access(path, (err: ?Error) => {
+      if (err) return res(false);
 
-			return res(true);
-		});
-	});
-};
+      return res(true);
+    });
+  });
 
-export const readDirAsync = (dir: string): Promise<Array<string>> => {
-	return new Promise((res, rej) => {
-		readdir(dir, (err: ?ErrnoError, files: Array<string>) => {
-			if (err) return res([]);
+export const readDirAsync = (dir: string): Promise<Array<string>> =>
+  new Promise((res) => {
+    readdir(dir, (err: ?Error, files: Array<string>) => {
+      if (err) return res([]);
 
-			return res(files);
-		});
-	});
-};
+      return res(files);
+    });
+  });
