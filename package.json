@@ -13,7 +13,9 @@
         "eslint-plugin-flowtype": "^2.32.1",
         "flow-bin": "^0.45.0",
         "jest": "^20.0.0",
-        "slash": "^1.0.0"
+        "eslint-plugin-import": "2.2.0",
+        "eslint-plugin-jsx-a11y": "4.0.0",
+        "eslint-plugin-react": "6.9.0"
     },
     "scripts": {
         "start": "babel-node src/cli.js",
@@ -25,10 +27,5 @@
     },
     "bin": {
         "flow-untyped": "dist/cli.js"
-    },
-    "dependencies": {
-        "eslint-plugin-import": "2.2.0",
-        "eslint-plugin-jsx-a11y": "4.0.0",
-        "eslint-plugin-react": "6.9.0"
     }
 }
