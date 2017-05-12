@@ -14,7 +14,7 @@ export const getInfo = async (cwd: string, projectDeps: Object) => {
 	return Promise.all(Object.keys(projectDeps).map(async (dep) => {
 		const path = resolve(cwd, `node_modules/${dep}`);
 		const packageJsonPath = resolve(path, 'package.json');
-		const { main, version } = await readJsonFileAsync(packageJsonPath);
+		const { main, version }: { main: string, version: string } = await readJsonFileAsync(packageJsonPath);
 		const mainFile = resolve(path, main || 'index.js');
 
 		// if main file is index.js, look for index.js.flow
