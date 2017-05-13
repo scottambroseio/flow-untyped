@@ -1,9 +1,8 @@
 // @flow
 
-import { resolve } from 'path';
 import { getAllDependenciesForProject } from '../io';
 
-import { readJsonFileAsync } from '../async-fs';
+import { getFileAsync } from '../async-fs';
 
 jest.mock('../async-fs');
 jest.mock('path');
@@ -15,30 +14,20 @@ describe('getAllDependenciesForProject', () => {
       bar: '1.0.0',
     };
     // $FlowFixMe
-    readJsonFileAsync.mockImplementation(() => ({
-      dependencies: { foo: '1.0.0' },
-      devDependencies: { bar: '1.0.0' },
-    }));
+    getFileAsync.mockImplementation(
+      () =>
+        '{ "dependencies": { "foo": "1.0.0" }, "devDependencies": { "bar": "1.0.0" } }',
+    );
 
     const result = await getAllDependenciesForProject('');
 
     expect(result).toEqual(expected);
   });
 
-  it('should invoke readJsonFileAsync with the correct arguments', async () => {
-    const expected = 'foo/bar';
-
-    resolve.mockImplementation(() => expected);
-
-    await getAllDependenciesForProject('');
-
-    expect(readJsonFileAsync).toBeCalledWith(expected);
-  });
-
   it("should return empty objects if the fields don't exist", async () => {
     const expected = {};
     // $FlowFixMe
-    readJsonFileAsync.mockImplementation(() => ({}));
+    getFileAsync.mockImplementation(() => '{}');
 
     const result = await getAllDependenciesForProject('');
 

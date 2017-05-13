@@ -1,9 +1,14 @@
 // @flow
 
 import { resolve } from 'path';
+import { parse } from 'ini';
 
-import { fileExistsAsync, readDirAsync, readJsonFileAsync } from './async-fs';
+import { fileExistsAsync, readDirAsync, getFileAsync } from './async-fs';
 import { getAllDependenciesForProject } from './io';
+
+// eslint-disable-next-line
+const getFlowConfig = async (cwd: string) =>
+  parse(await getFileAsync(resolve(cwd, '.flowconfig')));
 
 export const getInfo = async (cwd: string, projectDeps: Object) => {
   const flowTypedDir = resolve(cwd, 'flow-typed/npm');
@@ -13,11 +18,8 @@ export const getInfo = async (cwd: string, projectDeps: Object) => {
     Object.keys(projectDeps).map(async (dep) => {
       const path = resolve(cwd, `node_modules/${dep}`);
       const packageJsonPath = resolve(path, 'package.json');
-      const {
-        main,
-        version,
-      }: { main: string, version: string } = await readJsonFileAsync(
-        packageJsonPath,
+      const { main, version }: { main: string, version: string } = JSON.parse(
+        await getFileAsync(packageJsonPath),
       );
 
       const mainFile = resolve(path, main || 'index.js');

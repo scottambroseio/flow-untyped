@@ -2,14 +2,15 @@
 
 import { resolve } from 'path';
 
-import { readJsonFileAsync } from './async-fs';
+import { getFileAsync } from './async-fs';
 
 // eslint-disable-next-line
 export const getAllDependenciesForProject = async (
   directory: string,
 ): Promise<Object> => {
   const path = resolve(directory, 'package.json');
-  const packageJson = await readJsonFileAsync(path);
+
+  const packageJson = JSON.parse(await getFileAsync(path));
 
   const runDeps = packageJson.dependencies || {};
   const devDeps = packageJson.devDependencies || {};

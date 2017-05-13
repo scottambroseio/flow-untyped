@@ -2,12 +2,12 @@
 
 import { readFile, access, readdir } from 'fs';
 
-export const readJsonFileAsync = (path: string): Promise<Object> =>
+export const getFileAsync = (path: string): Promise<string> =>
   new Promise((res, rej) => {
     readFile(path, 'utf8', (err, data) => {
       if (err) return rej(err);
 
-      return res(JSON.parse(data));
+      return res(data);
     });
   });
 

@@ -2,46 +2,36 @@
 
 import { readFile, access, readdir } from 'fs';
 
-import { readJsonFileAsync, fileExistsAsync, readDirAsync } from '../async-fs';
+import { getFileAsync, fileExistsAsync, readDirAsync } from '../async-fs';
 
 jest.mock('fs');
 
-describe('readJsonFileAsync', () => {
+describe('getFileAsync', () => {
   it('should return the package.json contents as a JS object', async () => {
     const dir = 'testdir';
-    const expected = {
+    const expected = `{
       main: 'test',
-    };
-
+    }`;
     readFile.mockImplementation((path: string, encoding: string, callback: (
       err: any,
       data: any
     ) => void) => {
-      callback(undefined, '{"main": "test"}');
+      callback(undefined, expected);
     });
-
-    const result = await readJsonFileAsync(dir);
-
-    expect(readFile).toHaveBeenCalledWith(
-      expect.any(String),
-      'utf8',
-      expect.any(Function),
-    );
-    expect(result).toEqual(expected);
+    // $FlowFixMe
+    await expect(getFileAsync(dir)).resolves.toEqual(expected);
   });
 
   it('should throw if it encounters an error when reading from the fs', async () => {
     const err = new Error('generic error');
-
     readFile.mockImplementation((path: string, encoding: string, callback: (
       err: any,
       data: any
     ) => void) => {
       callback(err, undefined);
     });
-
     // $FlowFixMe
-    await expect(readJsonFileAsync('test')).rejects.toBe(err);
+    await expect(getFileAsync('test')).rejects.toBe(err);
   });
 });
 
