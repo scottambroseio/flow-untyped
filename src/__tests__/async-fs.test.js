@@ -12,6 +12,7 @@ describe('getFileAsync', () => {
     const expected = `{
       main: 'test',
     }`;
+
     readFile.mockImplementation((path: string, encoding: string, callback: (
       err: any,
       data: any
