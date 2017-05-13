@@ -1,19 +1,17 @@
 // @flow
 
 import { resolve } from 'path';
+import { parse } from 'ini';
 
-import { getFileAsync } from './async-fs';
+import { getFileAsync, readDirAsync } from './async-fs';
 
-// eslint-disable-next-line
-export const getAllDependenciesForProject = async (
-  directory: string,
-): Promise<Object> => {
-  const path = resolve(directory, 'package.json');
+import type { FlowConfig, PackageJson } from './types';
 
-  const packageJson = JSON.parse(await getFileAsync(path));
+export const getFlowConfig = async (cwd: string): Promise<FlowConfig> =>
+	parse(await getFileAsync(resolve(cwd, '.flowconfig')));
 
-  const runDeps = packageJson.dependencies || {};
-  const devDeps = packageJson.devDependencies || {};
+export const getFlowTypeDefs = (cwd: string): Promise<string[]> =>
+	readDirAsync(resolve(cwd, 'flow-typed/npm'));
 
-  return Object.assign({}, runDeps, devDeps);
-};
+export const getPackageJsonForDirectory = async (path: string): Promise<PackageJson> =>
+	JSON.parse(await getFileAsync(resolve(path, 'package.json')));

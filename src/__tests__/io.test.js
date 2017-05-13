@@ -1,36 +1,18 @@
 // @flow
 
-import { getAllDependenciesForProject } from '../io';
+// import { getFlowConfig, getFlowTypeDefs, getPackageJsonForDirectory } from '../io';
 
-import { getFileAsync } from '../async-fs';
+describe('getFlowConfig', () => {
+	// eslint-disable-next-line
+	it.skip('should do something', () => {});
+});
 
-jest.mock('../async-fs');
-jest.mock('path');
+describe('getFlowTypeDefs', () => {
+	// eslint-disable-next-line
+	it.skip('should do something', () => {});
+});
 
-describe('getAllDependenciesForProject', () => {
-  it('should return the correct dependencies', async () => {
-    const expected = {
-      foo: '1.0.0',
-      bar: '1.0.0',
-    };
-    // $FlowFixMe
-    getFileAsync.mockImplementation(
-      () =>
-        '{ "dependencies": { "foo": "1.0.0" }, "devDependencies": { "bar": "1.0.0" } }',
-    );
-
-    const result = await getAllDependenciesForProject('');
-
-    expect(result).toEqual(expected);
-  });
-
-  it("should return empty objects if the fields don't exist", async () => {
-    const expected = {};
-    // $FlowFixMe
-    getFileAsync.mockImplementation(() => '{}');
-
-    const result = await getAllDependenciesForProject('');
-
-    expect(result).toEqual(expected);
-  });
+describe('getPackageJsonForDirectory', () => {
+	// eslint-disable-next-line
+	it.skip('should do something', () => {});
 });

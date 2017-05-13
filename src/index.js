@@ -1,53 +1,68 @@
 // @flow
 
 import { resolve } from 'path';
-import { parse } from 'ini';
 
-import { fileExistsAsync, readDirAsync, getFileAsync } from './async-fs';
-import { getAllDependenciesForProject } from './io';
+import { fileExistsAsync, getFileAsync } from './async-fs';
+import { getFlowTypeDefs, getFlowConfig, getPackageJsonForDirectory } from './io';
 
-// eslint-disable-next-line
-const getFlowConfig = async (cwd: string) =>
-  parse(await getFileAsync(resolve(cwd, '.flowconfig')));
+import type { PackageJson } from './types';
 
-export const getInfo = async (cwd: string, projectDeps: Object) => {
-  const flowTypedDir = resolve(cwd, 'flow-typed/npm');
-  const flowTypeDefs = await readDirAsync(flowTypedDir);
+export const getAllDependenciesForProject = async (directory: string): Promise<Object> => {
+  const packageJson: PackageJson = JSON.parse(
+		await getFileAsync(resolve(directory, 'package.json')),
+	);
 
-  return Promise.all(
-    Object.keys(projectDeps).map(async (dep) => {
-      const path = resolve(cwd, `node_modules/${dep}`);
-      const packageJsonPath = resolve(path, 'package.json');
-      const { main, version }: { main: string, version: string } = JSON.parse(
-        await getFileAsync(packageJsonPath),
-      );
-
-      const mainFile = resolve(path, main || 'index.js');
-
-      // if main file is index.js, look for index.js.flow
-      const defFile = `${mainFile}.flow`;
-      const defFileExists = await fileExistsAsync(defFile);
-      const depString = `${dep}@${version}`;
-
-      if (defFileExists) {
-        return `${depString} is typed`;
-      }
-      // check for flow-typed defFile in flow-typed directory
-      const flowTypeDefExists = flowTypeDefs.some(filename =>
-        filename.match(`^${dep}_v`),
-      );
-
-      return flowTypeDefExists
-        ? `${depString} is typed`
-        : `${depString} is untyped`;
-    }),
-  );
+  return Object.assign({}, packageJson.dependencies || {}, packageJson.devDependencies || {});
 };
 
-export const run = async (): Promise<string[]> => {
-  const cwd = process.cwd();
+export const getInfo = async (cwd: string, projectDeps: Object) => {
+  const flowTypeDefs = await getFlowTypeDefs(cwd);
+  const flowConfig = await getFlowConfig(cwd);
 
-  const projectDeps = await getAllDependenciesForProject(cwd);
+  return Promise.all(
+		Object.keys(projectDeps).map(async (dep) => {
+  const path = resolve(cwd, `node_modules/${dep}`);
 
-  return getInfo(cwd, projectDeps);
+  const { main, version } = await getPackageJsonForDirectory(path);
+
+			// if main file is index.js, look for index.js.flow
+  const defFileExists = await fileExistsAsync(`${resolve(path, main || 'index.js')}.flow`);
+
+  const depString = `${dep}@${version}`;
+
+  if (defFileExists) {
+    return `${depString} is typed`;
+  }
+			// check for flow-typed defFile in flow-typed directory
+  const flowTypeDefExists = flowTypeDefs.some(filename => filename.match(`^${dep}_v`));
+
+  if (flowTypeDefExists) {
+    return `${depString} is typed`;
+  }
+
+  if (flowConfig.includes === undefined) {
+    return `${depString} is untyped`;
+  }
+
+  Object.keys(flowConfig.includes).some(() => false);
+
+  return `${depString} is untyped`;
+}),
+	);
+};
+
+export const run = async (): Promise<void> => {
+  try {
+    const cwd = process.cwd();
+
+    const projectDeps = await getAllDependenciesForProject(cwd);
+
+    const info = await getInfo(cwd, projectDeps);
+
+    info.sort().forEach((result) => {
+      console.log(result);
+    });
+  } catch (e) {
+    console.error('Sorry, something went wrong :(');
+  }
 };
