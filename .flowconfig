@@ -1,4 +1,8 @@
 [ignore]
+.*/build/.*
+.*/debug/.*
+.*/node_modules/.*
+.*/coverage/.*
 
 [include]
 
