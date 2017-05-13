@@ -1,5 +1,9 @@
 # flow-untyped
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/scottrangerio/flow-untyped.svg)](https://greenkeeper.io/)
+
+## About
+
 A simple and basic tool to try and detect which project dependencies are flow-typed and which aren't
 
 This project doesn't use an AST parser to resolve module imports (which would be preferred, however is more complicated to build), it simply looks at the project's package.json and works from there. This means it does result in picking up dependencies such as babel-presets which are never required in code.
@@ -21,3 +25,10 @@ This tool will never be perfect with the way it works, it's just an excuse for m
 TODO:
 - Make it smarter (e.g read the [libs] section of the .flowconfig file and look in them for definitions also)!
 - Make it work with monorepo style projects rather than single projects
+- Handle errors better rather than having single generic catch all which isn't super helpful to the user!
+
+## Installation
+`yarn global add flow-untyped` or `npm install -g flow-untyped`
+
+## Usage
+Run the command `flow-untyped` in the root directory of the project you want to check (where the package.json resides)
