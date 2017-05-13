@@ -9,7 +9,11 @@
             "unix"
         ],
         "no-console": "off",
-        "no-tabs": "off"
+        "no-tabs": "off",
+        "indent": [
+            "error",
+            4
+        ]
     },
     "env": {
         "jest": true,

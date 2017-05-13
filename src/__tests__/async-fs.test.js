@@ -7,89 +7,78 @@ import { getFileAsync, fileExistsAsync, readDirAsync } from '../async-fs';
 jest.mock('fs');
 
 describe('getFileAsync', () => {
-  it('should return the package.json contents as a JS object', async () => {
-    const dir = 'testdir';
-    const expected = `{
-      main: 'test',
-    }`;
+    const genMockFn = (arg1, arg2) => (
+		path: string,
+		encoding: string,
+		callback: (err: any, data: any) => void,
+	) => {
+        callback(arg1, arg2);
+    };
 
-    readFile.mockImplementation((path: string, encoding: string, callback: (
-      err: any,
-      data: any
-    ) => void) => {
-      callback(undefined, expected);
-    });
-    // $FlowFixMe
-    await expect(getFileAsync(dir)).resolves.toEqual(expected);
-  });
+    it('should return the package.json contents as a JS object', async () => {
+        const dir = 'testdir';
+        const expected = "{ main: 'test' }";
 
-  it('should throw if it encounters an error when reading from the fs', async () => {
-    const err = new Error('generic error');
-    readFile.mockImplementation((path: string, encoding: string, callback: (
-      err: any,
-      data: any
-    ) => void) => {
-      callback(err, undefined);
+        readFile.mockImplementation(genMockFn(undefined, expected));
+		// $FlowFixMe
+        await expect(getFileAsync(dir)).resolves.toEqual(expected);
     });
-    // $FlowFixMe
-    await expect(getFileAsync('test')).rejects.toBe(err);
-  });
+
+    it('should throw if it encounters an error when reading from the fs', async () => {
+        const err = new Error('generic error');
+
+        readFile.mockImplementation(genMockFn(err));
+		// $FlowFixMe
+        await expect(getFileAsync('test')).rejects.toBe(err);
+    });
 });
 
 describe('readJsonFileAsync', () => {
-  it('should return true if the file exists', async () => {
-    access.mockImplementation((path: string, callback: (
-      err: ?Error
-    ) => void) => {
-      callback();
+    const genMockFn = err => (path: string, callback: (err: ?Error) => void) => {
+        callback(err);
+    };
+
+    it('should return true if the file exists', async () => {
+        access.mockImplementation(genMockFn());
+
+        const result = await fileExistsAsync('somefile');
+
+        expect(result).toBe(true);
     });
 
-    const result = await fileExistsAsync('somefile');
+    it("should return false if the file doesn't exist", async () => {
+        access.mockImplementation(genMockFn(new Error('dummy error')));
 
-    expect(result).toBe(true);
-  });
+        const result = await fileExistsAsync('somefile');
 
-  it("should return false if the file doesn't exist", async () => {
-    access.mockImplementation((path: string, callback: (
-      err: ?Error
-    ) => void) => {
-      callback(new Error('dummy error'));
+        expect(result).toBe(false);
     });
-
-    const result = await fileExistsAsync('somefile');
-
-    expect(result).toBe(false);
-  });
 });
 
 describe('readDirAsync', () => {
-  it('should return a list of files in the directory', async () => {
-    const expected = ['somefile.js', 'someotherfile.js'];
+    const genMockFn = (arg1, arg2) => (
+		dir: string,
+		callback: (err: ?Error, files: Array<string>) => void,
+	) => {
+        callback(arg1, arg2);
+    };
 
-    readdir.mockImplementation((dir: string, callback: (
-      err: ?Error,
-      files: Array<string>
-    ) => void) => {
-      callback(undefined, expected);
+    it('should return a list of files in the directory', async () => {
+        const expected = ['somefile.js', 'someotherfile.js'];
+
+        readdir.mockImplementation(genMockFn(undefined, expected));
+
+        const result = await readDirAsync('testdir');
+
+        expect(result).toBe(expected);
     });
 
-    const result = await readDirAsync('testdir');
+    it('should return an empty list if the directory is empty', async () => {
+        const expected = [];
+        readdir.mockImplementation(genMockFn(new Error('some error'), []));
 
-    expect(result).toBe(expected);
-  });
+        const result = await readDirAsync('testdir');
 
-  it('should return an empty list if the directory is empty', async () => {
-    const expected = [];
-
-    readdir.mockImplementation((dir: string, callback: (
-      err: ?Error,
-      files: Array<string>
-    ) => void) => {
-      callback(new Error('some error'), []);
+        expect(result).toEqual(expected);
     });
-
-    const result = await readDirAsync('testdir');
-
-    expect(result).toEqual(expected);
-  });
 });
