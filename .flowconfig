@@ -9,3 +9,6 @@
 [libs]
 
 [options]
+
+[version]
+^0.46.0
