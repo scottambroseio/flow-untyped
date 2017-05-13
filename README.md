@@ -1,5 +1,7 @@
 # flow-untyped
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/scottrangerio/flow-untyped.svg)](https://greenkeeper.io/)
+
 ## About
 
 A simple and basic tool to try and detect which project dependencies are flow-typed and which aren't
