@@ -1,5 +1,5 @@
 # flow-untyped
-
+[![Build Status](https://travis-ci.org/scottrangerio/flow-untyped.svg?branch=master)](https://travis-ci.org/scottrangerio/flow-untyped)
 [![Greenkeeper badge](https://badges.greenkeeper.io/scottrangerio/flow-untyped.svg)](https://greenkeeper.io/)
 
 ## About
